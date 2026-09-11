@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta property="og:title" content="Random SMP — A Minecraft Server" />
+    <meta property="og:description" content="Random SMP — A Minecraft Server. Join Now!" />
+    <meta property="og:image" content="https://i.postimg.cc/hJ9gvfd2/6e9de6bf-0e1e-3edf-6649-a0ec73f6e2a0.jpg" />
+    <meta property="og:url" content="https://usupusu.github.io/Randomsmp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1607528971806-3c61b76904e3?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: brightness(0.5) saturate(1.1);
+            z-index: 0;
+            transform: scale(1.05);
+            animation: bgZoom 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgZoom {
+            0% { transform: scale(1.05); }
+            100% { transform: scale(1.15); }
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(10,0,20,0.5) 50%, rgba(0,0,0,0.85) 100%);
+            z-index: 2;
+        }
+
+        /* ===== PARTICLES ===== */
+        #particlesCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .fade-in-delay-1 { animation-delay: 0.2s; }
+        .fade-in-delay-2 { animation-delay: 0.4s; }
+        .fade-in-delay-3 { animation-delay: 0.6s; }
+        .fade-in-delay-4 { animation-delay: 0.8s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glow-text {
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                text-shadow: 0 0 30px rgba(74, 222, 128, 0.4), 0 0 60px rgba(168, 85, 247, 0.2);
+            }
+            50% {
+                text-shadow: 0 0 50px rgba(74, 222, 128, 0.7), 0 0 100px rgba(168, 85, 247, 0.4);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff 0%, #4ade80 40%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            color: #ccc;
+            font-size: 1.3rem;
+            max-width: 600px;
+            margin: 0 auto 16px;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        /* ===== SERVER IP BOX ===== */
+        .server-ip-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 18px;
+            padding: 18px 28px;
+            margin-bottom: 28px;
+            backdrop-filter: blur(20px);
+            transition: 0.4s;
+            flex-wrap: wrap;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(74, 222, 128, 0.1);
+        }
+
+        .server-ip-box:hover {
+            border-color: rgba(74, 222, 128, 0.6);
+            box-shadow: 0 0 60px rgba(74, 222, 128, 0.2);
+            transform: scale(1.02);
+        }
+
+        .server-ip-box .ip {
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #4ade80;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+        }
+
+        .server-ip-box .copy-btn {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .server-ip-box .copy-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.5);
+        }
+
+        .server-ip-box .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== BUTTONS ===== */
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 36px;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            cursor: pointer;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #000;
+            box-shadow: 0 10px 40px rgba(74, 222, 128, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 15px 60px rgba(74, 222, 128, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-4px) scale(1.03);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .btn-discord {
+            background: #5865F2;
+            color: #fff;
+            box-shadow: 0 10px 40px rgba(88, 101, 242, 0.3);
+        }
+
+        .btn-discord:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 15px 60px rgba(88, 101, 242, 0.5);
+        }
+
+        .btn-discord:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        /* ===== SECTION ===== */
+        .section {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .section-sub {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 60px;
+        }
+
+        /* ===== INFO CARDS ===== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            transition: 0.4s;
+        }
+
+        .info-card:hover {
+            border-color: rgba(74, 222, 128, 0.4);
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 20px 60px rgba(74, 222, 128, 0.1);
+        }
+
+        .info-card .value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #4ade80;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .info-card .label {
+            color: #666;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #444;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #4ade80;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        footer a:hover {
+            color: #66ff99;
+            text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            color: #000;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            z-index: 99999;
+            box-shadow: 0 15px 50px rgba(74, 222, 128, 0.5);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 640px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .server-ip-box {
+                flex-direction: column;
+                gap: 10px;
+                padding: 16px 20px;
+            }
+            .server-ip-box .ip {
+                font-size: 1rem;
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            .btn {
+                padding: 14px 28px;
+                font-size: 0.95rem;
+            }
+            .info-card .value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <canvas id="particlesCanvas"></canvas>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="fade-in fade-in-delay-1 glow-text">Random SMP</h1>
+            <p class="fade-in fade-in-delay-2">Random SMP</p>
+            <p class="fade-in fade-in-delay-2">A Minecraft Server. Join Now!</p>
+
+            <div class="server-ip-box fade-in fade-in-delay-3">
+                <span class="ip" id="serverIP">randomsmpz.mcsh.io</span>
+                <button class="copy-btn" onclick="copyIP()">
+                    📋 Copy IP
+                </button>
+            </div>
+
+            <div class="hero-buttons fade-in fade-in-delay-4">
+                <a href="minecraft://?addExternalServer=Random SMP|randomsmpz.mcsh.io:19132" class="btn btn-primary">
+                    🎮 Add to Minecraft
+                </a>
+                <a href="https://discord.gg/f9YSv76xvV" class="btn btn-discord" target="_blank">
+                    💬 Discord
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== INFO SECTION ===== -->
+    <section class="section" id="info">
+        <h2 class="section-title scroll-animate">Server Ip</h2>
+        <div class="info-grid">
+            <div class="info-card scroll-animate">
+                <div class="value">randomsmpz.mcsh.io</div>
+                <div class="label">Port (default for bedrock & java)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <p>IP: <a href="#" onclick="copyIP();return false;">randomsmpz.mcsh.io</a> • Port: Default</p>
+        <p style="margin-top:10px;">Join Now</p>
+    </footer>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast">IP copied</div>
+
+    <script>
+        // ===== COPY IP =====
+        function copyIP() {
+            const ip = 'randomsmpz.mcsh.io';
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(ip).then(() => {
+                    showToast('✅ IP copied: ' + ip);
+                }).catch(() => {
+                    fallbackCopy(ip);
+                });
+            } else {
+                fallbackCopy(ip);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast('✅ IP copied: ' + text);
+        }
+
+        // ===== TOAST =====
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // ===== PARTICLES =====
+        const canvas = document.getElementById('particlesCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        const count = 100;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > width) this.speedX *= -1;
+                if (this.y < 0 || this.y > height) this.speedY *= -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < count; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // ===== SCROLL ANIMATIONS =====
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 100);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.scroll-animate').forEach(el => {
+            observer.observe(el);
+        });
+
+        // ===== SMOOTH SCROLL =====
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
